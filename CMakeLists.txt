@@ -1,0 +1,8 @@
+cmake_minimum_required (VERSION 2.6)
+set(TEST_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(TEST_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+message(STATUS "CURRENT SOURCE DIR: ${TEST_SOURCE_DIR}")
+message(STATUS "CURRENT BINARY DIR: ${TEST_BINARY_DIR}")
+project (A9G_Server)
+aux_source_directory(. DIR_TEST)
+add_executable(A9G ${DIR_TEST})
