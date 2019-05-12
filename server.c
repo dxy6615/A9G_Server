@@ -29,46 +29,47 @@ int main()
 
     }
 
-while(1) {
-        static char buff[1024] = { 0 };
-	static unsigned char AT_got = 0;	
+	while(1) 
+	{
+    	static char buff[1024] = { 0 };
+		static unsigned char AT_got = 0;	
 //        struct sockaddr_in cli_addr;
         socklen_t len = sizeof(struct sockaddr_in);
         recvfrom(sockfd, buff, 1023, 0,
                 (struct sockaddr*)&cli_addr[0], &len);
-	if (0 == strncmp(buff, "A9G: ", 5))
-	{
-		if(0 != memcmp((void*)&cli_addr[2], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
+		if (0 == strncmp(buff, "A9G: ", 5))
 		{
-			memcpy((void*)&cli_addr[2],(void*)&cli_addr[0], sizeof(struct sockaddr_in));
-			printf("Got A9G addr!\n");
-			AT_got = 1;
+			if(0 != memcmp((void*)&cli_addr[2], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
+			{
+				memcpy((void*)&cli_addr[2],(void*)&cli_addr[0], sizeof(struct sockaddr_in));
+				printf("Got A9G addr!\n");
+				AT_got = 1;
+			}
 		}
-	}
-        if (0 == strcmp(buff, "link")) {
-         memcpy((void*)&cli_addr[1], (void*)&cli_addr[0], sizeof(struct sockaddr_in));
-           printf("Got client addr!\n");
-		snprintf(buff, sizeof(buff), "Server: Linked!\n");
-		sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[1], len);
-      	}
-	else if (0 == memcmp((void*)&cli_addr[1], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
-	{
-		printf("Client data:%s\n", buff);
-		//strcpy (data, buff);
-		sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[2], len);
+			if (0 == strcmp(buff, "link")) {
+			memcpy((void*)&cli_addr[1], (void*)&cli_addr[0], sizeof(struct sockaddr_in));
+			printf("Got client addr!\n");
+			snprintf(buff, sizeof(buff), "Server: Linked!\n");
+			sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[1], len);
+			}
+		else if (0 == memcmp((void*)&cli_addr[1], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
+		{
+			printf("Client data:%s\n", buff);
+			//strcpy (data, buff);
+			sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[2], len);
 
-	}
-	if (0 == memcmp((void*)&cli_addr[2], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
-	{
-		printf("GPRS data:%s\n", buff);
-		//strcpy (data, buff);
-		sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[1], len);
-	}
+		}
+		if (0 == memcmp((void*)&cli_addr[2], (void*)&cli_addr[0], sizeof(struct sockaddr_in)))
+		{
+			printf("GPRS data:%s\n", buff);
+			//strcpy (data, buff);
+			sendto(sockfd, buff, strlen(buff), 0, (struct sockaddr*)&cli_addr[1], len);
+		}
 
 	
      	memset(buff, 0, sizeof(buff));
    }
 
    close(sockfd);
-    return 0;
+   return 0;
 }
